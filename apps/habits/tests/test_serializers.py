@@ -59,9 +59,10 @@ class TestHabitSerializer:
         assert habit.action == 'Morning Run'
         assert habit.owner == user
 
-    def test_habit_with_reward_and_linked_habit(self, user_factory, habit_factory):
+    def test_habit_with_reward_and_linked_habit(self, user_factory, habit_factory, place_factory):
         user = user_factory()
-        pleasant_habit = habit_factory(owner=user, is_pleasant=True)
+        place = place_factory(owner=user)
+        pleasant_habit = habit_factory(owner=user, place=place, is_pleasant=True)
 
         data = {
             'action': 'Workout',
@@ -108,7 +109,8 @@ class TestHabitSerializer:
 
     def test_habit_with_linked_non_pleasant_habit(self, user_factory, habit_factory):
         user = user_factory()
-        non_pleasant_habit = habit_factory(owner=user, is_pleasant=False)
+        place = place_factory(owner=user)
+        non_pleasant_habit = habit_factory(owner=user,place=place, is_pleasant=False)
 
         data = {
             'action': 'Workout',
@@ -138,7 +140,8 @@ class TestHabitSerializer:
 
     def test_habit_serializer_read_only_fields(self, habit_factory, user_factory):
         user = user_factory()
-        habit = habit_factory(owner=user, action='Test Habit')
+        place = place_factory(owner=user)
+        habit = habit_factory(owner=user,place=place, action='Test Habit')
 
         serializer = HabitSerializer(habit)
         data = serializer.data

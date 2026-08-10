@@ -48,7 +48,8 @@ class Habit(models.Model):
         related_name='habits',
         verbose_name='Место выполнения'
     )
-    name = models.CharField(max_length=100, validators=[validate_habit], default="Новая привычка")
+    name = models.CharField(max_length=100, verbose_name='Название привычки',
+        help_text='Уникальное название для привычки')
     action = models.CharField(max_length=255, verbose_name='Действие')
     time = models.TimeField(verbose_name='Время выполнения')
 
@@ -105,7 +106,16 @@ class Habit(models.Model):
         return f"{self.action} ({self.time})"
 
     def clean(self):
-        validate_habit(self)
+        if self.pk is None:  # Создание
+            if Habit.objects.filter(owner=self.owner, name=self.name).exists():
+                raise ValidationError(
+                    f"У вас уже есть привычка с названием '{self.name}'"
+                )
+        else:  # Обновление
+            if Habit.objects.exclude(pk=self.pk).filter(owner=self.owner, name=self.name).exists():
+                raise ValidationError(
+                    f"У вас уже есть привычка с названием '{self.name}'"
+                )
 
     def save(self, *args, **kwargs):
         self.full_clean()

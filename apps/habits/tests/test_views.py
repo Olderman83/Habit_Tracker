@@ -89,8 +89,10 @@ class TestHabitViews:
         user = user_factory()
         api_client.force_authenticate(user=user)
 
-        habit1 = habit_factory(owner=user, action='Habit 1')
-        habit2 = habit_factory(owner=user, action='Habit 2')
+        place = place_factory(owner=user, name='Test Place')
+
+        habit1 = habit_factory(owner=user, action='Habit 1', place=place)
+        habit2 = habit_factory(owner=user, action='Habit 2', place=place)
 
         url = reverse('habit-list-create')
         response = api_client.get(url)
@@ -110,8 +112,10 @@ class TestHabitViews:
         user = user_factory()
         api_client.force_authenticate(user=user)
 
-        habit_factory(owner=user, is_pleasant=True, action='Pleasant 1')
-        habit_factory(owner=user, is_pleasant=False, action='Pleasant 2')
+        place = place_factory(owner=user, name='Test Place')
+
+        habit_factory(owner=user, is_pleasant=True, action='Pleasant 1',place=place)
+        habit_factory(owner=user, is_pleasant=False, action='Pleasant 2',place=place)
 
         url = reverse('habit-list-create') + '?is_pleasant=true'
         response = api_client.get(url)
@@ -124,7 +128,9 @@ class TestHabitViews:
         user = user_factory()
         api_client.force_authenticate(user=user)
 
-        habit = habit_factory(owner=user, action='Old Action')
+        place = place_factory(owner=user, name='Test Place')
+
+        habit = habit_factory(owner=user, action='Old Action',place=place)
         url = reverse('habit-detail', kwargs={'pk': habit.id})
         data = {'action': 'New Action'}
 
@@ -138,7 +144,9 @@ class TestHabitViews:
         user = user_factory()
         api_client.force_authenticate(user=user)
 
-        habit = habit_factory(owner=user)
+        place = place_factory(owner=user, name='Test Place')
+
+        habit = habit_factory(owner=user,place=place)
         url = reverse('habit-detail', kwargs={'pk': habit.id})
 
         response = api_client.delete(url)
@@ -149,9 +157,11 @@ class TestHabitViews:
         user = user_factory()
         api_client.force_authenticate(user=user)
 
-        habit_factory(owner=user, is_public=True, is_active=True, action='Public 1')
-        habit_factory(owner=user, is_public=False, is_active=True, action='Public 2')
-        habit_factory(owner=user, is_public=True, is_active=False, action='Public 3')
+        place = place_factory(owner=user, name='Test Place')
+
+        habit_factory(owner=user, is_public=True, is_active=True, action='Public 1',place=place)
+        habit_factory(owner=user, is_public=False, is_active=True, action='Public 2',place=place)
+        habit_factory(owner=user, is_public=True, is_active=False, action='Public 3',place=place)
 
         url = reverse('habit-public-list')
         response = api_client.get(url)
