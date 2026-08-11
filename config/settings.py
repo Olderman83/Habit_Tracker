@@ -142,6 +142,14 @@ SPECTACULAR_SETTINGS = {
     'DESCRIPTION': 'API for tracking habits with notifications',
     'VERSION': '1.0.0',
     'SERVE_INCLUDE_SCHEMA': False,
+    'TAGS': [
+        {'name': 'users', 'description': 'Управление пользователями'},
+        {'name': 'habits', 'description': 'Управление привычками'},
+        {'name': 'places', 'description': 'Управление местами'},
+        {'name': 'telegram', 'description': 'Telegram бот'},
+    ],
+    'COMPONENT_SPLIT_REQUEST': True,
+    'SERVE_PERMISSIONS': ['rest_framework.permissions.AllowAny'],
 }
 
 TELEGRAM_BOT_TOKEN = os.getenv('TELEGRAM_BOT_TOKEN')

@@ -4,18 +4,117 @@ from rest_framework.permissions import AllowAny
 from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
 from django.utils.decorators import method_decorator
-from .models import TelegramUser
-from apps.users.models import User
+from drf_spectacular.utils import extend_schema, OpenApiResponse, OpenApiExample
+from rest_framework import serializers
 from .bot import bot
 
 logger = logging.getLogger(__name__)
 
 
+# Определяем схемы для документации
+class TelegramMessageSerializer(serializers.Serializer):
+    """Схема для входящего сообщения от Telegram"""
+    message_id = serializers.IntegerField()
+    from_user = serializers.DictField(source='from')
+    chat = serializers.DictField()
+    date = serializers.IntegerField()
+    text = serializers.CharField(required=False)
+
+
+class TelegramUpdateSerializer(serializers.Serializer):
+    """Схема для обновления от Telegram"""
+    update_id = serializers.IntegerField()
+    message = TelegramMessageSerializer(required=False)
+
+
 @method_decorator(csrf_exempt, name='dispatch')
 class TelegramWebhookView(APIView):
-    """Handle Telegram webhook updates"""
+    """Обработка обновлений вебхука Telegram"""
     permission_classes = [AllowAny]
 
+    @extend_schema(
+        summary="Telegram Webhook",
+        description="""
+            Эндпоинт для получения обновлений от Telegram.
+
+            Поддерживаемые команды:
+            - `/start` - приветственное сообщение с инструкцией
+
+            Webhook должен быть настроен в Telegram Bot API.
+            """,
+        request=TelegramUpdateSerializer,
+        responses={
+            200: OpenApiResponse(
+                description="Webhook успешно обработан",
+                response={
+                    'type': 'object',
+                    'properties': {
+                        'ok': {'type': 'boolean', 'example': True}
+                    }
+                }
+            ),
+            500: OpenApiResponse(
+                description="Ошибка обработки webhook",
+                response={
+                    'type': 'object',
+                    'properties': {
+                        'ok': {'type': 'boolean', 'example': False},
+                        'error': {'type': 'string', 'example': 'Error description'}
+                    }
+                }
+            )
+        },
+        examples=[
+            OpenApiExample(
+                'Пример команды /start',
+                value={
+                    'update_id': 123456789,
+                    'message': {
+                        'message_id': 1,
+                        'from': {
+                            'id': 123456789,
+                            'username': 'telegram_user'
+                        },
+                        'chat': {
+                            'id': 123456789
+                        },
+                        'date': 1234567890,
+                        'text': '/start'
+                    }
+                },
+                request_only=True
+            ),
+            OpenApiExample(
+                'Пример обычного сообщения',
+                value={
+                    'update_id': 123456789,
+                    'message': {
+                        'message_id': 1,
+                        'from': {
+                            'id': 123456789,
+                            'username': 'telegram_user'
+                        },
+                        'chat': {
+                            'id': 123456789
+                        },
+                        'date': 1234567890,
+                        'text': 'Hello'
+                    }
+                },
+                request_only=True
+            ),
+            OpenApiExample(
+                'Успешный ответ',
+                value={'ok': True},
+                response_only=True
+            ),
+            OpenApiExample(
+                'Ответ с ошибкой',
+                value={'ok': False, 'error': 'Invalid request format'},
+                response_only=True
+            )
+        ]
+    )
     def post(self, request):
         try:
             data = request.data
@@ -23,42 +122,8 @@ class TelegramWebhookView(APIView):
 
             if 'message' in data and data['message'].get('text') == '/start':
                 chat_id = data['message']['chat']['id']
-                user_data = data['message']['from']
-                username = user_data.get('username', '')
-                first_name = user_data.get('first_name', '')
-                last_name = user_data.get('last_name', '')
 
-                # Используем username
-                logger.info(f"User {username} (ID: {chat_id}) started the bot")
-
-                # Создаем или обновляем запись о пользователе
-                telegram_user, created = TelegramUser.objects.get_or_create(
-                    chat_id=chat_id,
-                    defaults={
-                        'username': username,
-                        'first_name': first_name,
-                        'last_name': last_name,
-                    }
-                )
-
-                if created:
-                    logger.info(f"New Telegram user created: {username}")
-                else:
-                    # Обновляем данные
-                    telegram_user.username = username
-                    telegram_user.first_name = first_name
-                    telegram_user.last_name = last_name
-                    telegram_user.save()
-
-                # Ищем связанного пользователя
-                user = User.objects.filter(telegram_chat_id=chat_id).first()
-
-                if user:
-                    greeting = f"С возвращением, {user.first_name or username}!"
-                else:
-                    greeting = "Добро пожаловать!"
-
-                response_text = f"""<b>{greeting}</b>
+                response_text = """👋 <b>Добро пожаловать в Трекер Привычек!</b>
 
 Я буду напоминать вам о ваших привычках в нужное время.
 

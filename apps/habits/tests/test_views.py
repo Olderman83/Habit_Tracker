@@ -85,7 +85,7 @@ class TestHabitViews:
         assert response.status_code == status.HTTP_201_CREATED
         assert Habit.objects.filter(action='Morning Run', owner=user).exists()
 
-    def test_list_habits(self, api_client, user_factory, habit_factory):
+    def test_list_habits(self, api_client, user_factory, habit_factory, place_factory):
         user = user_factory()
         api_client.force_authenticate(user=user)
 
@@ -108,14 +108,14 @@ class TestHabitViews:
         assert habit1.action in habit_actions
         assert habit2.action in habit_actions
 
-    def test_list_habits_filter_by_is_pleasant(self, api_client, user_factory, habit_factory):
+    def test_list_habits_filter_by_is_pleasant(self, api_client, user_factory, habit_factory, place_factory):
         user = user_factory()
         api_client.force_authenticate(user=user)
 
         place = place_factory(owner=user, name='Test Place')
 
-        habit_factory(owner=user, is_pleasant=True, action='Pleasant 1',place=place)
-        habit_factory(owner=user, is_pleasant=False, action='Pleasant 2',place=place)
+        habit_factory(owner=user, is_pleasant=True, action='Pleasant 1', place=place)
+        habit_factory(owner=user, is_pleasant=False, action='Pleasant 2', place=place)
 
         url = reverse('habit-list-create') + '?is_pleasant=true'
         response = api_client.get(url)
@@ -124,13 +124,13 @@ class TestHabitViews:
         assert response.data['count'] == 1
         assert response.data['results'][0]['is_pleasant'] is True
 
-    def test_update_habit(self, api_client, user_factory, habit_factory):
+    def test_update_habit(self, api_client, user_factory, habit_factory, place_factory):
         user = user_factory()
         api_client.force_authenticate(user=user)
 
         place = place_factory(owner=user, name='Test Place')
 
-        habit = habit_factory(owner=user, action='Old Action',place=place)
+        habit = habit_factory(owner=user, action='Old Action', place=place)
         url = reverse('habit-detail', kwargs={'pk': habit.id})
         data = {'action': 'New Action'}
 
@@ -140,28 +140,28 @@ class TestHabitViews:
         habit.refresh_from_db()
         assert habit.action == 'New Action'
 
-    def test_delete_habit(self, api_client, user_factory, habit_factory):
+    def test_delete_habit(self, api_client, user_factory, habit_factory, place_factory):
         user = user_factory()
         api_client.force_authenticate(user=user)
 
         place = place_factory(owner=user, name='Test Place')
 
-        habit = habit_factory(owner=user,place=place)
+        habit = habit_factory(owner=user, place=place)
         url = reverse('habit-detail', kwargs={'pk': habit.id})
 
         response = api_client.delete(url)
         assert response.status_code == status.HTTP_204_NO_CONTENT
         assert not Habit.objects.filter(id=habit.id).exists()
 
-    def test_list_public_habits(self, api_client, user_factory, habit_factory):
+    def test_list_public_habits(self, api_client, user_factory, habit_factory, place_factory):
         user = user_factory()
         api_client.force_authenticate(user=user)
 
         place = place_factory(owner=user, name='Test Place')
 
-        habit_factory(owner=user, is_public=True, is_active=True, action='Public 1',place=place)
-        habit_factory(owner=user, is_public=False, is_active=True, action='Public 2',place=place)
-        habit_factory(owner=user, is_public=True, is_active=False, action='Public 3',place=place)
+        habit_factory(owner=user, is_public=True, is_active=True, action='Public 1', place=place)
+        habit_factory(owner=user, is_public=False, is_active=True, action='Public 2', place=place)
+        habit_factory(owner=user, is_public=True, is_active=False, action='Public 3', place=place)
 
         url = reverse('habit-public-list')
         response = api_client.get(url)

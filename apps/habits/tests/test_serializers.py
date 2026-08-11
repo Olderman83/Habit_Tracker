@@ -52,7 +52,7 @@ class TestHabitSerializer:
             'is_pleasant': False
         }
 
-        serializer = HabitSerializer(data=data, context={'request': user})
+        serializer = HabitSerializer(data=data, context={'request': type('Request', (), {'user': user})()})
         assert serializer.is_valid() is True
 
         habit = serializer.save(owner=user)
@@ -65,6 +65,7 @@ class TestHabitSerializer:
         pleasant_habit = habit_factory(owner=user, place=place, is_pleasant=True)
 
         data = {
+            'place': place.id,
             'action': 'Workout',
             'time': '08:00:00',
             'frequency': 1,
@@ -107,12 +108,13 @@ class TestHabitSerializer:
         assert serializer.is_valid() is False
         assert 'reward' in serializer.errors
 
-    def test_habit_with_linked_non_pleasant_habit(self, user_factory, habit_factory):
+    def test_habit_with_linked_non_pleasant_habit(self, user_factory, habit_factory, place_factory):
         user = user_factory()
         place = place_factory(owner=user)
-        non_pleasant_habit = habit_factory(owner=user,place=place, is_pleasant=False)
+        non_pleasant_habit = habit_factory(owner=user, place=place, is_pleasant=False)
 
         data = {
+            'place': place.id,
             'action': 'Workout',
             'time': '08:00:00',
             'frequency': 1,
@@ -138,10 +140,10 @@ class TestHabitSerializer:
         assert serializer.is_valid() is False
         assert 'frequency' in serializer.errors
 
-    def test_habit_serializer_read_only_fields(self, habit_factory, user_factory):
+    def test_habit_serializer_read_only_fields(self, habit_factory, user_factory, place_factory):
         user = user_factory()
         place = place_factory(owner=user)
-        habit = habit_factory(owner=user,place=place, action='Test Habit')
+        habit = habit_factory(owner=user, place=place, action='Test Habit')
 
         serializer = HabitSerializer(habit)
         data = serializer.data

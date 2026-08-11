@@ -10,6 +10,7 @@ def validate_habit(value):
     if Habit.objects.filter(name=value).exists():
         raise ValidationError(f"Привычка с названием '{value}' уже существует")
 
+
 class Place(models.Model):
     name = models.CharField(max_length=200, verbose_name='Название места')
     owner = models.ForeignKey(
@@ -49,7 +50,7 @@ class Habit(models.Model):
         verbose_name='Место выполнения'
     )
     name = models.CharField(max_length=100, verbose_name='Название привычки',
-        help_text='Уникальное название для привычки')
+                            help_text='Уникальное название для привычки')
     action = models.CharField(max_length=255, verbose_name='Действие')
     time = models.TimeField(verbose_name='Время выполнения')
 
@@ -116,6 +117,17 @@ class Habit(models.Model):
                 raise ValidationError(
                     f"У вас уже есть привычка с названием '{self.name}'"
                 )
+
+        if self.time_to_complete > 120:
+            raise ValidationError({
+                'time_to_complete': 'Время на выполнение не может превышать 120 секунд'
+            })
+
+            # Валидация frequency (от 1 до 7 дней)
+        if self.frequency < 1 or self.frequency > 7:
+            raise ValidationError({
+                'frequency': 'Периодичность должна быть от 1 до 7 дней'
+            })
 
     def save(self, *args, **kwargs):
         self.full_clean()
