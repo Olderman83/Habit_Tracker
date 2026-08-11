@@ -14,6 +14,7 @@ class TestHabitModel:
 
         habit = Habit.objects.create(
             owner=user,
+            name="Test Habit",
             place=place,
             action="Test habit",
             time="10:00:00",
@@ -28,6 +29,7 @@ class TestHabitModel:
         user = user_factory()
         habit = Habit(
             owner=user,
+            name="Test Habit",
             action="Test habit",
             time="10:00:00",
             time_to_complete=121,  # > 120
@@ -42,6 +44,7 @@ class TestHabitModel:
         user = user_factory()
         habit = Habit(
             owner=user,
+            name="Test Habit",
             action="Test habit",
             time="10:00:00",
             time_to_complete=60,

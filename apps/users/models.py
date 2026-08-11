@@ -9,6 +9,7 @@ class User(AbstractUser):
     username = None
     email = models.EmailField(unique=True, verbose_name='Email')
     is_verified = models.BooleanField(default=False, verbose_name='Подтвержден')
+    telegram_chat_id = models.CharField(max_length=100, blank=True, null=True)
 
     USERNAME_FIELD = 'email'
     REQUIRED_FIELDS = []

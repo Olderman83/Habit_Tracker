@@ -52,18 +52,20 @@ class TestHabitSerializer:
             'is_pleasant': False
         }
 
-        serializer = HabitSerializer(data=data, context={'request': user})
+        serializer = HabitSerializer(data=data, context={'request': type('Request', (), {'user': user})()})
         assert serializer.is_valid() is True
 
         habit = serializer.save(owner=user)
         assert habit.action == 'Morning Run'
         assert habit.owner == user
 
-    def test_habit_with_reward_and_linked_habit(self, user_factory, habit_factory):
+    def test_habit_with_reward_and_linked_habit(self, user_factory, habit_factory, place_factory):
         user = user_factory()
-        pleasant_habit = habit_factory(owner=user, is_pleasant=True)
+        place = place_factory(owner=user)
+        pleasant_habit = habit_factory(owner=user, place=place, is_pleasant=True)
 
         data = {
+            'place': place.id,
             'action': 'Workout',
             'time': '08:00:00',
             'frequency': 1,
@@ -106,11 +108,13 @@ class TestHabitSerializer:
         assert serializer.is_valid() is False
         assert 'reward' in serializer.errors
 
-    def test_habit_with_linked_non_pleasant_habit(self, user_factory, habit_factory):
+    def test_habit_with_linked_non_pleasant_habit(self, user_factory, habit_factory, place_factory):
         user = user_factory()
-        non_pleasant_habit = habit_factory(owner=user, is_pleasant=False)
+        place = place_factory(owner=user)
+        non_pleasant_habit = habit_factory(owner=user, place=place, is_pleasant=False)
 
         data = {
+            'place': place.id,
             'action': 'Workout',
             'time': '08:00:00',
             'frequency': 1,
@@ -136,9 +140,10 @@ class TestHabitSerializer:
         assert serializer.is_valid() is False
         assert 'frequency' in serializer.errors
 
-    def test_habit_serializer_read_only_fields(self, habit_factory, user_factory):
+    def test_habit_serializer_read_only_fields(self, habit_factory, user_factory, place_factory):
         user = user_factory()
-        habit = habit_factory(owner=user, action='Test Habit')
+        place = place_factory(owner=user)
+        habit = habit_factory(owner=user, place=place, action='Test Habit')
 
         serializer = HabitSerializer(habit)
         data = serializer.data

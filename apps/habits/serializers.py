@@ -46,6 +46,7 @@ class HabitSerializer(serializers.ModelSerializer):
         reward = data.get('reward', self.instance.reward if self.instance else None)
         time_to_complete = data.get('time_to_complete', self.instance.time_to_complete if self.instance else 60)
         frequency = data.get('frequency', self.instance.frequency if self.instance else 1)
+        place = data.get('place', self.instance.place if self.instance else None)
 
         # Создаем временный объект для валидации
         temp_habit = Habit(
@@ -53,7 +54,8 @@ class HabitSerializer(serializers.ModelSerializer):
             linked_habit=linked_habit,
             reward=reward,
             time_to_complete=time_to_complete,
-            frequency=frequency
+            frequency=frequency,
+            place=place
         )
 
         try:

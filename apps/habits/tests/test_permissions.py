@@ -10,7 +10,7 @@ User = get_user_model()
 class TestIsOwnerPermission:
     def test_owner_has_permission(self, user_factory, habit_factory):
         user = user_factory()
-        habit = habit_factory(owner=user)
+        habit = habit_factory(owner=user, name="Test Habit")
 
         permission = IsOwner()
         request = Mock()
@@ -21,7 +21,7 @@ class TestIsOwnerPermission:
     def test_non_owner_has_no_permission(self, user_factory, habit_factory):
         user1 = user_factory(email='user1@example.com')
         user2 = user_factory(email='user2@example.com')
-        habit = habit_factory(owner=user1)
+        habit = habit_factory(owner=user1, name="Test Habit")
 
         permission = IsOwner()
         request = Mock()
@@ -34,7 +34,7 @@ class TestIsOwnerPermission:
 class TestIsOwnerOrReadOnlyPermission:
     def test_owner_has_permission_for_modification(self, user_factory, habit_factory):
         user = user_factory()
-        habit = habit_factory(owner=user)
+        habit = habit_factory(owner=user, name="Test Habit")
 
         permission = IsOwnerOrReadOnly()
         request = Mock()
@@ -46,7 +46,7 @@ class TestIsOwnerOrReadOnlyPermission:
     def test_non_owner_has_read_permission(self, user_factory, habit_factory):
         user1 = user_factory(email='user1@example.com')
         user2 = user_factory(email='user2@example.com')
-        habit = habit_factory(owner=user1)
+        habit = habit_factory(owner=user1, name="Test Habit")
 
         permission = IsOwnerOrReadOnly()
         request = Mock()
@@ -58,7 +58,7 @@ class TestIsOwnerOrReadOnlyPermission:
     def test_non_owner_has_no_modification_permission(self, user_factory, habit_factory):
         user1 = user_factory(email='user1@example.com')
         user2 = user_factory(email='user2@example.com')
-        habit = habit_factory(owner=user1)
+        habit = habit_factory(owner=user1, name="Test Habit")
 
         permission = IsOwnerOrReadOnly()
         request = Mock()
@@ -73,7 +73,7 @@ class TestIsPublicReadOnlyPermission:
     def test_anyone_can_read_public_habit(self, user_factory, habit_factory):
         user1 = user_factory(email='user1@example.com')
         user2 = user_factory(email='user2@example.com')
-        habit = habit_factory(owner=user1, is_public=True)
+        habit = habit_factory(owner=user1, is_public=True, name="Test Habit")
 
         permission = IsPublicReadOnly()
         request = Mock()
@@ -85,7 +85,7 @@ class TestIsPublicReadOnlyPermission:
     def test_only_owner_can_modify_public_habit(self, user_factory, habit_factory):
         user1 = user_factory(email='user1@example.com')
         user2 = user_factory(email='user2@example.com')
-        habit = habit_factory(owner=user1, is_public=True)
+        habit = habit_factory(owner=user1, is_public=True, name="Test Habit")
 
         permission = IsPublicReadOnly()
 
@@ -104,7 +104,7 @@ class TestIsPublicReadOnlyPermission:
     def test_only_owner_can_access_private_habit(self, user_factory, habit_factory):
         user1 = user_factory(email='user1@example.com')
         user2 = user_factory(email='user2@example.com')
-        habit = habit_factory(owner=user1, is_public=False)
+        habit = habit_factory(owner=user1, is_public=False, name="Test Habit")
 
         permission = IsPublicReadOnly()
 
