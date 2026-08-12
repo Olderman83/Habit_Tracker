@@ -6,19 +6,19 @@ logger = logging.getLogger(__name__)
 
 
 class TelegramBot:
-    BASE_URL = 'https://api.telegram.org/bot'
+    BASE_URL = "https://api.telegram.org/bot"
 
     def __init__(self):
         self.token = settings.TELEGRAM_BOT_TOKEN
         self.base_url = f"{self.BASE_URL}{self.token}/"
 
-    def send_message(self, chat_id, text, parse_mode='HTML'):
+    def send_message(self, chat_id, text, parse_mode="HTML"):
         """Send message to Telegram user"""
         url = f"{self.base_url}sendMessage"
         payload = {
-            'chat_id': chat_id,
-            'text': text,
-            'parse_mode': parse_mode,
+            "chat_id": chat_id,
+            "text": text,
+            "parse_mode": parse_mode,
         }
 
         try:
@@ -27,14 +27,14 @@ class TelegramBot:
             return response.json()
         except requests.exceptions.RequestException as e:
             logger.error(f"Error sending Telegram message: {e}")
-            if hasattr(e, 'response') and e.response:
+            if hasattr(e, "response") and e.response:
                 logger.error(f"Response: {e.response.text}")
             return None
 
     def set_webhook(self, webhook_url):
         """Set webhook for bot"""
         url = f"{self.base_url}setWebhook"
-        payload = {'url': webhook_url}
+        payload = {"url": webhook_url}
 
         try:
             response = requests.post(url, json=payload, timeout=10)

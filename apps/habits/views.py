@@ -1,7 +1,12 @@
 from rest_framework import generics, filters
 from rest_framework.permissions import IsAuthenticated
 from django_filters.rest_framework import DjangoFilterBackend
-from drf_spectacular.utils import extend_schema, OpenApiResponse, OpenApiExample, OpenApiParameter
+from drf_spectacular.utils import (
+    extend_schema,
+    OpenApiResponse,
+    OpenApiExample,
+    OpenApiParameter,
+)
 from .models import Habit, Place
 from .serializers import HabitSerializer, HabitPublicSerializer, PlaceSerializer
 from .pagination import HabitPagination
@@ -19,15 +24,11 @@ class PlaceListCreateView(generics.ListCreateAPIView):
         responses={
             201: PlaceSerializer,
             400: OpenApiResponse(description="Ошибка валидации данных"),
-            401: OpenApiResponse(description="Неавторизованный доступ")
+            401: OpenApiResponse(description="Неавторизованный доступ"),
         },
         examples=[
-            OpenApiExample(
-                'Пример запроса',
-                value={'name': 'Дом'},
-                request_only=True
-            )
-        ]
+            OpenApiExample("Пример запроса", value={"name": "Дом"}, request_only=True)
+        ],
     )
     def post(self, request, *args, **kwargs):
         return super().post(request, *args, **kwargs)
@@ -44,9 +45,9 @@ class HabitListCreateView(generics.ListCreateAPIView):
     permission_classes = [IsAuthenticated]
     pagination_class = HabitPagination
     filter_backends = [DjangoFilterBackend, filters.OrderingFilter]
-    filterset_fields = ['is_pleasant', 'is_public', 'is_active']
-    ordering_fields = ['time', 'created_at']
-    ordering = ['time']
+    filterset_fields = ["is_pleasant", "is_public", "is_active"]
+    ordering_fields = ["time", "created_at"]
+    ordering = ["time"]
 
     @extend_schema(
         summary="Получение списка привычек",
@@ -61,42 +62,42 @@ class HabitListCreateView(generics.ListCreateAPIView):
             """,
         parameters=[
             OpenApiParameter(
-                name='is_pleasant',
+                name="is_pleasant",
                 type=bool,
                 location=OpenApiParameter.QUERY,
-                description='Фильтр по типу привычки (true - приятная, false - полезная)',
-                required=False
+                description="Фильтр по типу привычки (true - приятная, false - полезная)",
+                required=False,
             ),
             OpenApiParameter(
-                name='is_public',
+                name="is_public",
                 type=bool,
                 location=OpenApiParameter.QUERY,
-                description='Фильтр по публичности',
-                required=False
+                description="Фильтр по публичности",
+                required=False,
             ),
             OpenApiParameter(
-                name='is_active',
+                name="is_active",
                 type=bool,
                 location=OpenApiParameter.QUERY,
-                description='Фильтр по активности',
-                required=False
+                description="Фильтр по активности",
+                required=False,
             ),
             OpenApiParameter(
-                name='ordering',
+                name="ordering",
                 type=str,
                 location=OpenApiParameter.QUERY,
-                description='Сортировка (time, -time, created_at, -created_at)',
+                description="Сортировка (time, -time, created_at, -created_at)",
                 required=False,
                 examples=[
-                    OpenApiExample('По времени', value='time'),
-                    OpenApiExample('По времени убывание', value='-time'),
-                ]
-            )
+                    OpenApiExample("По времени", value="time"),
+                    OpenApiExample("По времени убывание", value="-time"),
+                ],
+            ),
         ],
         responses={
             200: HabitSerializer(many=True),
-            401: OpenApiResponse(description="Неавторизованный доступ")
-        }
+            401: OpenApiResponse(description="Неавторизованный доступ"),
+        },
     )
     def get(self, request, *args, **kwargs):
         return super().get(request, *args, **kwargs)
@@ -119,57 +120,60 @@ class HabitListCreateView(generics.ListCreateAPIView):
             400: OpenApiResponse(
                 description="Ошибка валидации данных",
                 response={
-                    'type': 'object',
-                    'properties': {
-                        'linked_habit': {'type': 'array', 'items': {'type': 'string'}},
-                        'reward': {'type': 'array', 'items': {'type': 'string'}},
-                        'time_to_complete': {'type': 'array', 'items': {'type': 'string'}},
-                    }
-                }
+                    "type": "object",
+                    "properties": {
+                        "linked_habit": {"type": "array", "items": {"type": "string"}},
+                        "reward": {"type": "array", "items": {"type": "string"}},
+                        "time_to_complete": {
+                            "type": "array",
+                            "items": {"type": "string"},
+                        },
+                    },
+                },
             ),
-            401: OpenApiResponse(description="Неавторизованный доступ")
+            401: OpenApiResponse(description="Неавторизованный доступ"),
         },
         examples=[
             OpenApiExample(
-                'Полезная привычка с вознаграждением',
+                "Полезная привычка с вознаграждением",
                 value={
-                    'action': 'Делать зарядку',
-                    'time': '08:00:00',
-                    'frequency': 1,
-                    'time_to_complete': 60,
-                    'reward': 'Кофе с пирожным',
-                    'is_pleasant': False,
-                    'is_public': False,
-                    'place': 1
+                    "action": "Делать зарядку",
+                    "time": "08:00:00",
+                    "frequency": 1,
+                    "time_to_complete": 60,
+                    "reward": "Кофе с пирожным",
+                    "is_pleasant": False,
+                    "is_public": False,
+                    "place": 1,
                 },
-                request_only=True
+                request_only=True,
             ),
             OpenApiExample(
-                'Полезная привычка со связанной привычкой',
+                "Полезная привычка со связанной привычкой",
                 value={
-                    'action': 'Изучать Python',
-                    'time': '20:00:00',
-                    'frequency': 2,
-                    'time_to_complete': 30,
-                    'linked_habit': 2,
-                    'is_pleasant': False,
-                    'is_public': True
+                    "action": "Изучать Python",
+                    "time": "20:00:00",
+                    "frequency": 2,
+                    "time_to_complete": 30,
+                    "linked_habit": 2,
+                    "is_pleasant": False,
+                    "is_public": True,
                 },
-                request_only=True
+                request_only=True,
             ),
             OpenApiExample(
-                'Приятная привычка',
+                "Приятная привычка",
                 value={
-                    'action': 'Смотреть любимый сериал',
-                    'time': '22:00:00',
-                    'frequency': 1,
-                    'time_to_complete': 120,
-                    'is_pleasant': True,
-                    'is_public': False
+                    "action": "Смотреть любимый сериал",
+                    "time": "22:00:00",
+                    "frequency": 1,
+                    "time_to_complete": 120,
+                    "is_pleasant": True,
+                    "is_public": False,
                 },
-                request_only=True
-            )
-        ]
+                request_only=True,
+            ),
+        ],
     )
     def post(self, request, *args, **kwargs):
         return super().post(request, *args, **kwargs)
@@ -186,9 +190,9 @@ class HabitPublicListView(generics.ListAPIView):
     permission_classes = [IsAuthenticated]
     pagination_class = HabitPagination
     filter_backends = [DjangoFilterBackend, filters.OrderingFilter]
-    filterset_fields = ['action', 'time']
-    ordering_fields = ['time', 'created_at']
-    ordering = ['time']
+    filterset_fields = ["action", "time"]
+    ordering_fields = ["time", "created_at"]
+    ordering = ["time"]
 
     @extend_schema(
         summary="Получение публичных привычек",
@@ -202,24 +206,24 @@ class HabitPublicListView(generics.ListAPIView):
             """,
         parameters=[
             OpenApiParameter(
-                name='action',
+                name="action",
                 type=str,
                 location=OpenApiParameter.QUERY,
-                description='Фильтр по действию',
-                required=False
+                description="Фильтр по действию",
+                required=False,
             ),
             OpenApiParameter(
-                name='time',
+                name="time",
                 type=str,
                 location=OpenApiParameter.QUERY,
-                description='Фильтр по времени',
-                required=False
-            )
+                description="Фильтр по времени",
+                required=False,
+            ),
         ],
         responses={
             200: HabitPublicSerializer(many=True),
-            401: OpenApiResponse(description="Неавторизованный доступ")
-        }
+            401: OpenApiResponse(description="Неавторизованный доступ"),
+        },
     )
     def get(self, request, *args, **kwargs):
         return super().get(request, *args, **kwargs)
