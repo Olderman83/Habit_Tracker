@@ -28,6 +28,7 @@ INSTALLED_APPS = [
     'apps.users',
     'apps.habits',
     'apps.telegram_bot',
+    'django_celery_beat',
 ]
 
 MIDDLEWARE = [
@@ -125,12 +126,8 @@ CELERY_ACCEPT_CONTENT = ['json']
 CELERY_TASK_SERIALIZER = 'json'
 CELERY_RESULT_SERIALIZER = 'json'
 CELERY_TIMEZONE = TIME_ZONE
-CELERY_BEAT_SCHEDULE = {
-    'send_habit_notifications': {
-        'task': 'apps.telegram_bot.tasks.send_habit_notifications',
-        'schedule': 60.0,
-    },
-}
+CELERY_ENABLE_UTC = False
+CELERY_BEAT_SCHEDULER = 'django_celery_beat.schedulers:DatabaseScheduler'
 
 
 EMAIL_BACKEND = os.getenv('EMAIL_BACKEND', 'django.core.mail.backends.filebased.EmailBackend')
