@@ -249,7 +249,7 @@ class HabitRetrieveUpdateDestroyView(RetrieveUpdateDestroyAPIView):
 class HabitDetailView(RetrieveUpdateDestroyAPIView):
     queryset = Habit.objects.all()
     serializer_class = HabitSerializer
-    permission_classes = [IsOwnerOrReadOnly]
+    permission_classes = [IsOwnerOrReadOnly, IsOwnerOrReadOnly]
 
     def get_queryset(self):
         return Habit.objects.filter(owner=self.request.user)

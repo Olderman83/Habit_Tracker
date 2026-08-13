@@ -18,14 +18,15 @@ class TestTelegramTasks:
 
         TelegramUser.objects.create(user=user, chat_id="123456789", is_active=True)
 
-        future_time = (timezone.now() + timedelta(seconds=1)).time()
+        now = timezone.now()
+        habit_time = (now + timedelta(seconds=1)).time()
 
         habit = habit_factory(
             owner=user,
             place=place,
             name="Test Habit",
             action="Test Action",
-            time=future_time,
+            time=habit_time,
             frequency=1,
             is_active=True
         )

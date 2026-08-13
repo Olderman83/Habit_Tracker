@@ -28,6 +28,7 @@ class HabitSerializer(serializers.ModelSerializer):
             "id",
             "owner",
             "place",
+            "name"
             "place_name",
             "action",
             "time",
