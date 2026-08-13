@@ -19,7 +19,7 @@ class TestHabitModel:
             action="Test habit",
             time="10:00:00",
             time_to_complete=60,
-            frequency=1
+            frequency=1,
         )
 
         assert habit.id is not None
@@ -33,12 +33,12 @@ class TestHabitModel:
             action="Test habit",
             time="10:00:00",
             time_to_complete=121,  # > 120
-            frequency=1
+            frequency=1,
         )
 
         with pytest.raises(ValidationError) as exc:
             habit.full_clean()
-        assert 'time_to_complete' in str(exc.value)
+        assert "time_to_complete" in str(exc.value)
 
     def test_habit_validation_frequency(self, user_factory):
         user = user_factory()
@@ -48,9 +48,9 @@ class TestHabitModel:
             action="Test habit",
             time="10:00:00",
             time_to_complete=60,
-            frequency=8  # > 7
+            frequency=8,  # > 7
         )
 
         with pytest.raises(ValidationError) as exc:
             habit.full_clean()
-        assert 'frequency' in str(exc.value)
+        assert "frequency" in str(exc.value)

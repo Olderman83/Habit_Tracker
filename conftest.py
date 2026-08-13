@@ -16,6 +16,7 @@ def api_client():
 def user_factory(db):
     def create_user(email="test@example.com", password="testpass123", **kwargs):
         return User.objects.create_user(email=email, password=password, **kwargs)
+
     return create_user
 
 
@@ -23,22 +24,33 @@ def user_factory(db):
 def place_factory(db):
     def create_place(owner, name="Test Place"):
         return Place.objects.create(owner=owner, name=name)
+
     return create_place
 
 
 @pytest.fixture
 def habit_factory(db):
-    def create_habit(owner, place=None, action="Test habit", time="10:00:00",
-                     time_to_complete=60, frequency=1, **kwargs):
+    def create_habit(
+        owner,
+        place=None,
+        name="Test Habit",
+        action="Test habit",
+        time="10:00:00",
+        time_to_complete=60,
+        frequency=1,
+        **kwargs,
+    ):
         return Habit.objects.create(
             owner=owner,
             place=place,
+            name=name,
             action=action,
             time=time,
             time_to_complete=time_to_complete,
             frequency=frequency,
-            **kwargs
+            **kwargs,
         )
+
     return create_habit
 
 

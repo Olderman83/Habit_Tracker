@@ -24,8 +24,7 @@ class TestUserModel:
 
     def test_create_superuser_success(self, user_factory):
         user = User.objects.create_superuser(
-            email="admin@example.com",
-            password="adminpass123"
+            email="admin@example.com", password="adminpass123"
         )
 
         assert user.is_staff is True
@@ -35,9 +34,7 @@ class TestUserModel:
     def test_create_superuser_without_staff_raises_error(self):
         with pytest.raises(ValueError) as exc:
             User.objects.create_superuser(
-                email="admin@example.com",
-                password="adminpass123",
-                is_staff=False
+                email="admin@example.com", password="adminpass123", is_staff=False
             )
         assert "is_staff=True" in str(exc.value)
 
@@ -73,6 +70,7 @@ class TestEmailVerificationTokenModel:
 
         assert token.is_valid() is False
 
+    @pytest.mark.django_db(transaction=True)
     def test_token_unique_constraint(self, user_factory):
         user1 = user_factory(email="user1@example.com")
         user2 = user_factory(email="user2@example.com")
@@ -85,6 +83,7 @@ class TestEmailVerificationTokenModel:
 
         # Try to create token for user2
         token2 = EmailVerificationToken.objects.create(user=user2)
+
         assert token2.id is not None
         assert token2.token != token1.token
 
