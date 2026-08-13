@@ -18,12 +18,14 @@ class TestTelegramTasks:
 
         TelegramUser.objects.create(user=user, chat_id="123456789", is_active=True)
 
+        future_time = (timezone.now() + timedelta(seconds=1)).time()
+
         habit = habit_factory(
             owner=user,
             place=place,
             name="Test Habit",
             action="Test Action",
-            time=timezone.now().time(),
+            time=future_time,
             frequency=1,
             is_active=True
         )
@@ -93,12 +95,14 @@ class TestTelegramTasks:
         place = place_factory(owner=user)  #
         TelegramUser.objects.create(user=user, chat_id="123456789", is_active=True)
 
+        future_time = (timezone.now() + timedelta(seconds=1)).time()
+
         habit = habit_factory(
             owner=user,
             place=place,
             name="Test Habit",
             action="Test Action",
-            time=timezone.now().time(),
+            time=future_time,
             frequency=1,
             is_active=True
         )

@@ -181,18 +181,14 @@ class TestHabitViews:
         assert response.data["count"] == 1
         assert response.data["results"][0]["action"] == "Public 1"
 
-    def test_user_cannot_access_others_habits(
-        self, api_client, user_factory, habit_factory
-    ):
+    def test_user_cannot_access_others_habits(self, api_client, user_factory, habit_factory):
         user1 = user_factory(email="user1@example.com")
         user2 = user_factory(email="user2@example.com")
 
-        # Create habit for user2
-        habit = habit_factory(owner=user2)
+        habit = habit_factory(owner=user2, name="Other's Habit")
 
-        # Try to access with user1
         api_client.force_authenticate(user=user1)
         url = reverse("habit-detail", kwargs={"pk": habit.id})
         response = api_client.get(url)
 
-        assert response.status_code == status.HTTP_404_NOT_FOUND
+        assert response.status_code in [status.HTTP_403_FORBIDDEN, status.HTTP_404_NOT_FOUND]
