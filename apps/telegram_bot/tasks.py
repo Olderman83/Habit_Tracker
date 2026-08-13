@@ -55,8 +55,29 @@ def send_habit_notifications():
                 )
                 print(f"✅ Telegram user found: {telegram_user.chat_id}")
 
-                # Формируем сообщение
-                message = f"⏰ Напоминание о привычке!\n\nДействие: {habit.action}\nВремя: {habit.time.strftime('%H:%M')}"
+                message_lines = [
+                    "⏰ <b>Напоминание о привычке!</b>",
+                    "",
+                    f"<b>Действие:</b> {habit.action}",
+                    f"<b>Время:</b> {habit.time.strftime('%H:%M')}",
+                ]
+
+                if habit.place:
+                    message_lines.append(f"<b>Место:</b> {habit.place.name}")
+
+                message_lines.append(
+                    f"<b>Периодичность:</b> Каждые {habit.frequency} день(дней)"
+                )
+
+                if habit.reward:
+                    message_lines.append(f"<b>Вознаграждение:</b> {habit.reward}")
+                elif habit.linked_habit:
+                    message_lines.append(f"<b>Награда:</b> {habit.linked_habit.action}")
+
+                message_lines.append("")
+                message_lines.append("Приступайте к выполнению прямо сейчас! 💪")
+
+                message = "\n".join(message_lines)
 
                 result = bot.send_message(telegram_user.chat_id, message)
                 print(f"Bot send_message result: {result}")

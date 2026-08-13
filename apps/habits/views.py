@@ -245,13 +245,5 @@ class HabitRetrieveUpdateDestroyView(RetrieveUpdateDestroyAPIView):
     serializer_class = HabitSerializer
     permission_classes = [IsOwnerOrReadOnly]
 
-
-class HabitDetailView(RetrieveUpdateDestroyAPIView):
-    queryset = Habit.objects.all()
-    serializer_class = HabitSerializer
-    permission_classes = [IsOwnerOrReadOnly,]
-
     def get_queryset(self):
-        if self.request.user.is_authenticated:
-            return Habit.objects.filter(owner=self.request.user)
-        return Habit.objects.none()
+        return Habit.objects.filter(owner=self.request.user)
