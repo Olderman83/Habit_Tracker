@@ -6,7 +6,6 @@ from django.contrib.auth import get_user_model
 from apps.users.models import EmailVerificationToken
 from django.utils import timezone
 
-
 User = get_user_model()
 
 

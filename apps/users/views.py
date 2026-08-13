@@ -13,7 +13,6 @@ from drf_spectacular.utils import (
     OpenApiExample,
 )
 
-
 User = get_user_model()
 
 
