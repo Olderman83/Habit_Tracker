@@ -74,6 +74,7 @@ class TestHabitViews:
 
         url = reverse("habit-list-create")
         data = {
+            "name": "Morning Run",
             "place": place.id,
             "action": "Morning Run",
             "time": "07:00:00",
@@ -91,8 +92,8 @@ class TestHabitViews:
 
         place = place_factory(owner=user, name="Test Place")
 
-        habit1 = habit_factory(owner=user, action="Habit 1", place=place)
-        habit2 = habit_factory(owner=user, action="Habit 2", place=place)
+        habit1 = habit_factory(owner=user, action="Habit 1", place=place, name="Habit 1")
+        habit2 = habit_factory(owner=user, action="Habit 2", place=place, name="Habit 2")
 
         url = reverse("habit-list-create")
         response = api_client.get(url)
@@ -116,8 +117,8 @@ class TestHabitViews:
 
         place = place_factory(owner=user, name="Test Place")
 
-        habit_factory(owner=user, is_pleasant=True, action="Pleasant 1", place=place)
-        habit_factory(owner=user, is_pleasant=False, action="Pleasant 2", place=place)
+        habit_factory(owner=user, is_pleasant=True, action="Pleasant 1", place=place, name="Pleasant 1")
+        habit_factory(owner=user, is_pleasant=False, action="Pleasant 2", place=place, name="Pleasant 2")
 
         url = reverse("habit-list-create") + "?is_pleasant=true"
         response = api_client.get(url)
@@ -164,13 +165,13 @@ class TestHabitViews:
         place = place_factory(owner=user, name="Test Place")
 
         habit_factory(
-            owner=user, is_public=True, is_active=True, action="Public 1", place=place
+            owner=user, is_public=True, is_active=True, action="Public 1", place=place, name="Public 1"
         )
         habit_factory(
-            owner=user, is_public=False, is_active=True, action="Public 2", place=place
+            owner=user, is_public=False, is_active=True, action="Public 2", place=place, name="Public 2"
         )
         habit_factory(
-            owner=user, is_public=True, is_active=False, action="Public 3", place=place
+            owner=user, is_public=True, is_active=False, action="Public 3", place=place, name="Public 3"
         )
 
         url = reverse("habit-public-list")

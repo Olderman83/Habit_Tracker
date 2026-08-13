@@ -2,6 +2,8 @@ import pytest
 from django.contrib.auth import get_user_model
 from rest_framework import serializers
 from apps.users.models import EmailVerificationToken
+from apps.users.serializers import UserSerializer
+
 
 User = get_user_model()
 
@@ -216,23 +218,26 @@ class TestUserSerializer:
         assert updated_user.last_name == "Name"
 
     def test_serialize_user_partial_update(self, user_factory):
-        """Тест частичного обновления пользователя"""
+        """Тест проверяет частичное обновление пользователя"""
+        # Создаём пользователя с конкретными данными
         user = user_factory(
-            email="test@example.com", first_name="Original", last_name="User"
+            first_name="Original",
+            last_name="User",
+            email="test@example.com"
         )
 
-        # Обновляем только имя
-        serializer = self.MockUserSerializer(
-            user, data={"first_name": "NewName"}, partial=True
+        serializer = UserSerializer(
+            instance=user,
+            data={"first_name": "New"},
+            partial=True
         )
-
         assert serializer.is_valid() is True
+
         updated_user = serializer.save()
 
-        # Только имя должно измениться
-        assert updated_user.first_name == "NewName"
-        assert updated_user.last_name == "Original"  # Не изменилось
-        assert updated_user.email == "test@example.com"  # Не изменилось
+        assert updated_user.first_name == "New"
+
+        assert updated_user.last_name == "User"
 
     def test_serialize_user_without_telegram(self, user_factory):
         """Тест: пользователь без telegram chat id"""

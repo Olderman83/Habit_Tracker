@@ -43,6 +43,7 @@ class TestHabitSerializer:
         place = place_factory(owner=user)
 
         data = {
+            "name": "Morning Run",
             "place": place.id,
             "action": "Morning Run",
             "time": "07:00:00",

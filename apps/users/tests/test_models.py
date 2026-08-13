@@ -70,6 +70,7 @@ class TestEmailVerificationTokenModel:
 
         assert token.is_valid() is False
 
+    @pytest.mark.django_db(transaction=True)
     def test_token_unique_constraint(self, user_factory):
         user1 = user_factory(email="user1@example.com")
         user2 = user_factory(email="user2@example.com")
@@ -82,6 +83,7 @@ class TestEmailVerificationTokenModel:
 
         # Try to create token for user2
         token2 = EmailVerificationToken.objects.create(user=user2)
+
         assert token2.id is not None
         assert token2.token != token1.token
 
