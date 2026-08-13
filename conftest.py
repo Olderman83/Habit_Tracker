@@ -33,6 +33,7 @@ def habit_factory(db):
     def create_habit(
         owner,
         place=None,
+        name="Test Habit",
         action="Test habit",
         time="10:00:00",
         time_to_complete=60,
@@ -42,6 +43,7 @@ def habit_factory(db):
         return Habit.objects.create(
             owner=owner,
             place=place,
+            name=name,
             action=action,
             time=time,
             time_to_complete=time_to_complete,

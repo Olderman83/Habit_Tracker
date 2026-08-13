@@ -10,6 +10,9 @@ from drf_spectacular.utils import (
 from .models import Habit, Place
 from .serializers import HabitSerializer, HabitPublicSerializer, PlaceSerializer
 from .pagination import HabitPagination
+from rest_framework.generics import RetrieveUpdateDestroyAPIView
+from .serializers import PlaceSerializer
+from .permissions import IsOwnerOrReadOnly
 
 
 class PlaceListCreateView(generics.ListCreateAPIView):
@@ -230,3 +233,8 @@ class HabitPublicListView(generics.ListAPIView):
 
     def get_queryset(self):
         return Habit.objects.filter(is_public=True, is_active=True)
+
+class PlaceRetrieveUpdateDestroyView(RetrieveUpdateDestroyAPIView):
+    queryset = Place.objects.all()
+    serializer_class = PlaceSerializer
+    permission_classes = [IsOwnerOrReadOnly]

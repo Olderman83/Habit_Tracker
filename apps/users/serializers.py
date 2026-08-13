@@ -78,4 +78,4 @@ class UserSerializer(serializers.ModelSerializer):
             "is_verified",
             "telegram_chat_id",
         )
-        read_only_fields = ("id", "is_verified")
+        read_only_fields = ("id", "is_verified", "telegram_chat_id")
