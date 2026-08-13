@@ -192,3 +192,6 @@ class TestHabitViews:
         response = api_client.get(url)
 
         assert response.status_code in [status.HTTP_403_FORBIDDEN, status.HTTP_404_NOT_FOUND]
+
+    def get_queryset(self):
+        return Habit.objects.filter(owner=self.request.user)

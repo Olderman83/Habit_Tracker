@@ -70,6 +70,7 @@ class TestHabitSerializer:
         pleasant_habit = habit_factory(owner=user, place=place, is_pleasant=True)
 
         data = {
+            "name": "Workout Habit",
             "place": place.id,
             "action": "Workout",
             "time": "08:00:00",
@@ -87,6 +88,7 @@ class TestHabitSerializer:
         user = user_factory()
 
         data = {
+            "name": "Workout Habit",
             "action": "Workout",
             "time": "08:00:00",
             "frequency": 1,
@@ -101,6 +103,7 @@ class TestHabitSerializer:
         user = user_factory()
 
         data = {
+            "name": "Workout Habit",
             "action": "Read book",
             "time": "20:00:00",
             "frequency": 1,
@@ -121,6 +124,7 @@ class TestHabitSerializer:
         non_pleasant_habit = habit_factory(owner=user, place=place, is_pleasant=False)
 
         data = {
+            "name": "Workout Habit",
             "place": place.id,
             "action": "Workout",
             "time": "08:00:00",
@@ -137,6 +141,7 @@ class TestHabitSerializer:
         user = user_factory()
 
         data = {
+            "name": "Workout Habit",
             "action": "Workout",
             "time": "08:00:00",
             "frequency": 8,
