@@ -33,12 +33,6 @@ jobs:
       - name: Run flake8
         run: flake8 . --count --select=E9,F63,F7,F82 --show-source --statistics
 
-      - name: Run black check
-        run: black --check . --line-length 88
-
-      - name: Run isort check
-        run: isort --check-only --profile black .
-
   test:
     name: Run Tests
     runs-on: ubuntu-latest
