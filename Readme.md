@@ -35,22 +35,22 @@
 ### Установка
 
 1. Клонировать репозиторий:
-```bash
+
 git clone https://github.com/your-username/habit-tracker.git
 cd habit-tracker
 2.	Установить зависимости:
-bash
+
 poetry install
 3.	Создать файл .env из .env.template:
-bash
+
 cp .env.template .env
 # Отредактируйте .env под свои настройки
 4.	Применить миграции:
-bash
+
 poetry run python manage.py migrate
 5.	Создать суперпользователя:
-bash
+
 poetry run python manage.py createsuperuser
 6.	Запустить сервер разработки:
-bash
+
 poetry run python manage.py runserver
